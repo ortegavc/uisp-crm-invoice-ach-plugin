@@ -1,0 +1,11 @@
+<?php
+
+namespace App\Nacha\Record;
+
+class Block {
+
+	public function __toString() {
+		return '9999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999';
+	}
+
+}

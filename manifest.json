@@ -1,0 +1,27 @@
+{
+  "version": "1",
+  "information": {
+    "name": "ucrm-invoice-ach-plugin",
+    "displayName": "UCRM Invoice ACH plugin",
+    "description": "Generate Nacha files from invoices and create payments when triggered.",
+    "url": "",
+    "version": "1.0.2",
+    "ucrmVersionCompliancy": {
+      "min": "2.14.0-beta4",
+      "max": null
+    },
+    "unmsVersionCompliancy": {
+      "min": "1.0.0-dev.1",
+      "max": null
+    },
+    "author": "FLOffice"
+  },
+  "menu": [
+    {
+      "key": "Reports",
+      "label": "Invoices to ACH export",
+      "type": "admin",
+      "target": "iframe"
+    }
+  ]
+}
