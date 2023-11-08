@@ -17,6 +17,7 @@ class ACHGenerator
     private $api = null;
     private $companyId = 0;
     private $companyName = '';
+    private $issueClients = '';
 
     const CLIENT_ATTRIBUTE_ROUTING_NUMBER = 'routingNumber';
     const CLIENT_ATTRIBUTE_BANK_ACCOUNT_NAME = 'bankAccountNumber';
@@ -53,8 +54,8 @@ class ACHGenerator
         $file->getHeader()
             ->setPriorityCode('1')
 
-//            Enter LaSalle’s routing transit number 07100050, or
-//            Standard Federal’s transit routing number of 07200080.
+            //            Enter LaSalle’s routing transit number 07100050, or
+            //            Standard Federal’s transit routing number of 07200080.
             ->setImmediateDestination($originatingDFiId)
             ->setImmediateOrigin($this->companyId)
             ->setFileCreationDate(date('ymd'))
@@ -197,24 +198,20 @@ class ACHGenerator
                     }
                 }
 
-                if (
-                    empty($record['clientRoutingNumber'])
-                    or empty($record['clientBankAccountNumber'])
-                ) {
+                if (strlen($record['clientRoutingNumber']) != 9) {
+                    $this->issueClients .= sprintf('<li><a href="/crm/client/%d/edit" target="blank">Client #%d</a> %s %s | Bank Acc.: %s | Routing No.: %s </li>', $clientId, $clientId, $invoice['clientFirstName'], $invoice['clientLastName'], $record['clientRoutingNumber'], $record['clientBankAccountNumber']);
                     continue;
                 }
-
-                if (strlen($record['clientRoutingNumber']) != 9) {
-                    throw new \Exception(
-                        'Client #' . $clientId . ' Routing number: ' .
-                        $record['clientRoutingNumber'] . ' should have 9 digits.'
-                    );
-                }
             } else {
+                $this->issueClients .= sprintf('<li><a href="/crm/client/%d/edit" target="blank">Client #%d</a> %s %s (Bank Account/Routing Number missing)</li>', $clientId, $clientId, $invoice['clientFirstName'], $invoice['clientLastName']);
                 continue;
             }
 
             $this->unpaidInvoices[] = $record;
+        }
+
+        if ($this->issueClients !== '') {
+            throw new \Exception($this->issueClients);
         }
 
         return $this;
